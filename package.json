@@ -1,0 +1,41 @@
+{
+  "name": "visibility-state-listener",
+  "version": "1.0.0",
+  "description": "Cross-browser document visibility state detection library. Detects if user has switched to another window/tab or not.",
+  "main": "dist/minified/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build-minified && npm run build-umd && npm run build-umd-polyfilled",
+    "build-minified": "mkdir -p dist/minified && BABEL_ENV=development ./node_modules/.bin/minify ./source -d ./dist/minified && ls -lR ./dist",
+    "build-umd": "mkdir -p dist/umd && BABEL_ENV=development ./node_modules/.bin/browserify -s createVisibilityStateListener ./source/index.js -o ./dist/umd/index.js && ./node_modules/.bin/minify ./dist/umd/index.js --out-file ./dist/umd/index.js",
+    "build-umd-polyfilled": "mkdir -p dist/umd-polyfilled && mkdir -p ./source-compiled && BABEL_ENV=production ./node_modules/.bin/babel ./source -d ./source-compiled && ./node_modules/.bin/browserify -s createVisibilityStateListener ./source-compiled/index.js -o ./dist/umd-polyfilled/index.js && ./node_modules/.bin/minify ./dist/umd-polyfilled/index.js --out-file ./dist/umd-polyfilled/index.js && rm -rf ./source-compiled",
+    "release": "bash dev/push.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muratgozel/visibility-state-listener.git"
+  },
+  "keywords": [
+    "visibility-state",
+    "visibility-event",
+    "cross-browser"
+  ],
+  "author": "Murat Gözel <murat@gozel.com.tr>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muratgozel/visibility-state-listener/issues"
+  },
+  "homepage": "https://github.com/muratgozel/visibility-state-listener#readme",
+  "dependencies": {
+    "event-emitter-object": "^1.0.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-minify": "^0.5.1",
+    "babel-preset-minify": "^0.5.1",
+    "browserify": "^16.5.0",
+    "core-js": "^3.6.4"
+  }
+}
