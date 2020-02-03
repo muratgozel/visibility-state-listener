@@ -9,8 +9,9 @@ function createVisibilityStateListener(opts = {}) {
     value: 'visible'
   }
 
-  const win = opts.hasOwnProperty('window') ? opts.window : window
-  const doc = opts.hasOwnProperty('document') ? opts.document : document
+  const win = kit.getProp(opts, 'window', typeof window == 'undefined' ? undefined : window)
+  const doc = kit.getProp(opts, 'document', typeof document == 'undefined' ? undefined : document)
+  if (typeof win == 'undefined' || typeof doc == 'undefined') return;
 
   const matches = availablePrefixes.filter(p => p + 'Hidden' in doc)
   const prefix = matches && matches.length > 0 ? matches[0] : ''
@@ -47,6 +48,7 @@ function createVisibilityStateListener(opts = {}) {
   }
 
   function start() {
+    if (typeof win == 'undefined' || typeof doc == 'undefined') return;
     if (state.started === true) return;
 
     if (strategy == 'modern') {
@@ -68,6 +70,7 @@ function createVisibilityStateListener(opts = {}) {
   }
 
   function pause() {
+    if (typeof win == 'undefined' || typeof doc == 'undefined') return;
     if (state.started === false) return;
   
     if (strategy == 'modern') {
