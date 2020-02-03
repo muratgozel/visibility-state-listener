@@ -5,23 +5,31 @@ function createVisibilityStateListener(opts = {}) {
   const availablePrefixes = ['webkit', 'ms','o','moz','khtml']
 
   const state = {
+    error: null,
     started: false,
     value: 'visible'
   }
 
-  const win = kit.getProp(opts, 'window', typeof window == 'undefined' ? undefined : window)
-  const doc = kit.getProp(opts, 'document', typeof document == 'undefined' ? undefined : document)
-  if (typeof win == 'undefined' || typeof doc == 'undefined') return;
+  const win = opts.window || (typeof window == 'undefined' ? undefined : window)
+  const doc = opts.document || (typeof document == 'undefined' ? undefined : document)
+  if (typeof win == 'undefined' || typeof doc == 'undefined') {
+    state.error = 'INVALID_GLOBALS'
+  }
 
-  const matches = availablePrefixes.filter(p => p + 'Hidden' in doc)
+  let matches = []
+  if (typeof doc != 'undefined') {
+    matches = availablePrefixes.filter(p => p + 'Hidden' in doc)
+  }
   const prefix = matches && matches.length > 0 ? matches[0] : ''
   const hiddenProp = prefix + (prefix.length > 0 ? 'H' : 'h') + 'idden'
   const visibilityProp = prefix + (prefix.length > 0 ? 'V' : 'v') + 'isibilityState'
-
-  const strategy = hiddenProp in doc ? 
-    'modern' : doc.addEventListener ? 
-    'focus-blur' : 
-    'focus-blur-ie'
+  let strategy = null
+  if (typeof doc != 'undefined') {
+    strategy = hiddenProp in doc ? 
+      'modern' : doc.addEventListener ? 
+      'focus-blur' : 
+      'focus-blur-ie'
+  }
 
   function onChange() {
     const newState = doc[visibilityProp]
@@ -95,6 +103,9 @@ function createVisibilityStateListener(opts = {}) {
     emitter: emitter,
     start: start,
     pause: pause,
+    getError: function() {
+      return state.error
+    },
     getState: function() {
       return state.value
     }
