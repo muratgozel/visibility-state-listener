@@ -1,6 +1,6 @@
 {
   "name": "visibility-state-listener",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Cross-browser document visibility state detection library. Detects if user has switched to another window/tab or not.",
   "main": "dist/visibility-state-listener.cjs.js",
   "scripts": {

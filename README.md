@@ -58,8 +58,8 @@ This is an auto-generated report that shows the type, name and size of the bundl
   "visibility-state-listener.es.js (1.57 KB)",
   "visibility-state-listener.es.polyfilled.js (9.32 KB)",
   "visibility-state-listener.iife.js (1.66 KB)",
-  "visibility-state-listener.iife.polyfilled.js (9.40 KB)",
-  "visibility-state-listener.umd.js (1.87 KB)",
+  "visibility-state-listener.iife.polyfilled.js (9.41 KB)",
+  "visibility-state-listener.umd.js (1.88 KB)",
   "visibility-state-listener.umd.polyfilled.js (9.62 KB)"
 ]
 ```

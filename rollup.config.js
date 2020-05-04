@@ -26,7 +26,7 @@ module.exports = {
     {
       format: 'iife',
       file: 'dist/visibility-state-listener.iife' + suffix + '.js',
-      name: 'StateManagerObject',
+      name: 'VisibilityStateListener',
       globals: {
         'event-emitter-object': 'EventEmitterObject'
       }
@@ -34,7 +34,7 @@ module.exports = {
     {
       format: 'umd',
       file: 'dist/visibility-state-listener.umd' + suffix + '.js',
-      name: 'StateManagerObject',
+      name: 'VisibilityStateListener',
       globals: {
         'event-emitter-object': 'EventEmitterObject'
       }
