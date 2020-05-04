@@ -25,9 +25,9 @@ function createVisibilityStateListener(opts = {}) {
   const visibilityProp = prefix + (prefix.length > 0 ? 'V' : 'v') + 'isibilityState'
   let strategy = null
   if (typeof doc != 'undefined') {
-    strategy = hiddenProp in doc ? 
-      'modern' : doc.addEventListener ? 
-      'focus-blur' : 
+    strategy = hiddenProp in doc ?
+      'modern' : doc.addEventListener ?
+      'focus-blur' :
       'focus-blur-ie'
   }
 
@@ -35,7 +35,7 @@ function createVisibilityStateListener(opts = {}) {
     const newState = doc[visibilityProp]
     if (newState != state.value) {
       state.value = newState
-      emitter.emit('update')
+      emitter.emit('update', newState)
     }
   }
 
@@ -43,7 +43,7 @@ function createVisibilityStateListener(opts = {}) {
     const newState = 'visible'
     if (newState != state.value) {
       state.value = newState
-      emitter.emit('update')
+      emitter.emit('update', newState)
     }
   }
 
@@ -51,7 +51,7 @@ function createVisibilityStateListener(opts = {}) {
     const newState = 'hidden'
     if (newState != state.value) {
       state.value = newState
-      emitter.emit('update')
+      emitter.emit('update', newState)
     }
   }
 
@@ -73,14 +73,14 @@ function createVisibilityStateListener(opts = {}) {
     else {
       // no valid strategy found
     }
-    
+
     state.started = true
   }
 
   function pause() {
     if (typeof win == 'undefined' || typeof doc == 'undefined') return;
     if (state.started === false) return;
-  
+
     if (strategy == 'modern') {
       doc.removeEventListener(prefix + 'visibilitychange', onChange, 1)
     }
@@ -95,7 +95,7 @@ function createVisibilityStateListener(opts = {}) {
     else {
       // no valid strategy found
     }
-  
+
     state.started = false
   }
 
