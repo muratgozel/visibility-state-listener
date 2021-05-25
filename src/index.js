@@ -1,41 +1,45 @@
-const EventEmitter = require('event-emitter-object')
+const {create: createEventEmitter} = require('event-emitter-object')
 
-function createVisibilityStateListener(opts = {}) {
-  const emitter = new EventEmitter({})
-  const availablePrefixes = ['webkit', 'ms','o','moz','khtml']
+function createVisibilityStateListener(opts={}) {
+  function findPrefix(d) {
+    const availablePrefixes = ['webkit', 'ms','o','moz','khtml']
+    const matches = availablePrefixes.filter(p => p + 'Hidden' in d)
+    return matches && matches.length > 0 ? matches[0] : ''
+  }
 
+  const emitter = createEventEmitter()
+  const win = opts.window || (typeof window == 'undefined' ? undefined : window)
+  const doc = opts.document || (typeof document == 'undefined' ? undefined : document)
   const state = {
     error: null,
     started: false,
-    value: 'visible'
+    value: 'visible',
+    prefix: '',
+    visibilityProp: '',
+    hiddenProp: ''
   }
 
-  const win = opts.window || (typeof window == 'undefined' ? undefined : window)
-  const doc = opts.document || (typeof document == 'undefined' ? undefined : document)
   if (typeof win == 'undefined' || typeof doc == 'undefined') {
     state.error = 'INVALID_GLOBALS'
   }
 
-  let matches = []
-  if (typeof doc != 'undefined') {
-    matches = availablePrefixes.filter(p => p + 'Hidden' in doc)
-  }
-  const prefix = matches && matches.length > 0 ? matches[0] : ''
-  const hiddenProp = prefix + (prefix.length > 0 ? 'H' : 'h') + 'idden'
-  const visibilityProp = prefix + (prefix.length > 0 ? 'V' : 'v') + 'isibilityState'
-  let strategy = null
-  if (typeof doc != 'undefined') {
-    strategy = hiddenProp in doc ?
-      'modern' : doc.addEventListener ?
-      'focus-blur' :
-      'focus-blur-ie'
+  if (!state.error) {
+    state.prefix = findPrefix(doc)
+    state.hiddenProp = state.prefix + (state.prefix.length > 0 ? 'H' : 'h') + 'idden'
+    state.visibilityProp = state.prefix + (state.prefix.length > 0 ? 'V' : 'v') + 'isibilityState'
   }
 
+  const strategy =
+    !doc                    ? '' :
+    state.hiddenProp in doc       ? 'modern' :
+    doc.addEventListener    ? 'focus-blur' :
+                              'focus-blur-ie'
+
   function onChange() {
-    const newState = doc[visibilityProp]
+    const newState = doc[state.visibilityProp]
     if (newState != state.value) {
       state.value = newState
-      emitter.emit('update', newState)
+      emitter.emit('update', [newState])
     }
   }
 
@@ -43,7 +47,7 @@ function createVisibilityStateListener(opts = {}) {
     const newState = 'visible'
     if (newState != state.value) {
       state.value = newState
-      emitter.emit('update', newState)
+      emitter.emit('update', [newState])
     }
   }
 
@@ -51,16 +55,21 @@ function createVisibilityStateListener(opts = {}) {
     const newState = 'hidden'
     if (newState != state.value) {
       state.value = newState
-      emitter.emit('update', newState)
+      emitter.emit('update', [newState])
     }
   }
 
   function start() {
-    if (typeof win == 'undefined' || typeof doc == 'undefined') return;
-    if (state.started === true) return;
+    if (state.error) {
+      return false;
+    }
+
+    if (state.started === true) {
+      return true;
+    }
 
     if (strategy == 'modern') {
-      doc.addEventListener(prefix + 'visibilitychange', onChange, 0)
+      doc.addEventListener(state.prefix + 'visibilitychange', onChange, 0)
     }
     else if (strategy == 'focus-blur') {
       win.addEventListener('focus', onFocus, true)
@@ -70,19 +79,24 @@ function createVisibilityStateListener(opts = {}) {
       doc.attachEvent('onfocusin', onFocus)
       doc.attachEvent('onfocusout', onBlur)
     }
-    else {
-      // no valid strategy found
-    }
+    else {}
 
     state.started = true
+
+    return true;
   }
 
   function pause() {
-    if (typeof win == 'undefined' || typeof doc == 'undefined') return;
-    if (state.started === false) return;
+    if (state.error) {
+      return false;
+    }
+
+    if (state.started === false) {
+      return true;
+    }
 
     if (strategy == 'modern') {
-      doc.removeEventListener(prefix + 'visibilitychange', onChange, 1)
+      doc.removeEventListener(state.prefix + 'visibilitychange', onChange, 1)
     }
     else if (strategy == 'focus-blur') {
       win.removeEventListener('focus', onFocus, true)
@@ -92,17 +106,20 @@ function createVisibilityStateListener(opts = {}) {
       doc.detachEvent('onfocusin', onFocus)
       doc.detachEvent('onfocusout', onBlur)
     }
-    else {
-      // no valid strategy found
-    }
+    else {}
 
     state.started = false
+
+    return true;
   }
 
   return {
-    emitter: emitter,
+    on: emitter.on,
     start: start,
     pause: pause,
+    hasError: function() {
+      return typeof state.error == 'string' && state.error.length > 0
+    },
     getError: function() {
       return state.error
     },
@@ -112,4 +129,4 @@ function createVisibilityStateListener(opts = {}) {
   }
 }
 
-module.exports = createVisibilityStateListener
+module.exports = createVisibilityStateListener()

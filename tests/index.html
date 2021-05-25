@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Test visibility-state-listener</title>
+  </head>
+  <body>
+    <p>Test test test.</p>
+    <script src="https://cdn.jsdelivr.net/npm/event-emitter-object@4/dist/event-emitter-object.iife.js" crossorigin type="text/javascript"></script>
+    <script src="../dist/visibility-state-listener.iife.polyfilled.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      // just log the initial visibility status to the browser console
+      console.log(VisibilityStateListener.getState());
+
+      // register listener function
+      VisibilityStateListener.on('update', function(value) {
+        console.log('Visibility status updated to ' + value)
+      })
+
+      // start to listen for visibility changes
+      VisibilityStateListener.start();
+
+      // pause
+      //VisibilityStateListener.pause();
+    </script>
+  </body>
+</html>

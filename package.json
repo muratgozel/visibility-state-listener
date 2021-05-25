@@ -1,6 +1,6 @@
 {
   "name": "visibility-state-listener",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "Cross-browser document visibility state detection library. Detects if user has switched to another window/tab or not.",
   "main": "dist/visibility-state-listener.cjs.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "gen-babel-report": "node dev/generateBabelPolyfillReport.js",
     "gen-dist-report": "node dev/generateDistributionReport.js",
     "commit": "node dev/commit.js commit",
-    "test": "jest"
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -34,20 +34,20 @@
   },
   "homepage": "https://github.com/muratgozel/visibility-state-listener#readme",
   "dependencies": {
-    "event-emitter-object": "^1.1.2"
+    "event-emitter-object": "^4.0.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "core-js": "^3.6.5",
-    "@rollup/plugin-commonjs": "^11.1.0",
-    "@rollup/plugin-node-resolve": "^7.1.3",
-    "jest": "^25.5.1",
-    "rollup": "^2.6.1",
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "colors": "^1.4.0",
+    "core-js": "^3.12.1",
+    "rollup": "^2.50.0",
     "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-terser": "^5.3.0",
-    "semver": "^7.3.2",
-    "yargs": "^15.3.1"
+    "rollup-plugin-terser": "^7.0.2",
+    "semver": "^7.3.5",
+    "yargs": "^17.0.1"
   }
 }
